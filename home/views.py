@@ -1,3 +1,6 @@
-from django.shortcuts import render
+from rest_framework import generics
+from .models import MenuCategory
+from .serializers import MenuCategorySerializer
 
-# Create your views here.
+class MenuCategoryListView(generics.ListAPIView):
+    pass
