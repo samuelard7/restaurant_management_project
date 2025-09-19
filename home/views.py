@@ -3,4 +3,5 @@ from .models import MenuCategory
 from .serializers import MenuCategorySerializer
 
 class MenuCategoryListView(generics.ListAPIView):
-    pass
+    queryset = MenuCategory.objects.all()
+    serializer_class = MenuCategorySerializer
