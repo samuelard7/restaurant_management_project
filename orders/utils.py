@@ -1,11 +1,11 @@
-import string
 import secrets
 from django.db import IntegrityError
 from .models import Coupon
+import string
 
 def generate_coupon_code(length=10):
     if length < 1:
-        raise ValueError("Coupon code length miust be at least 1")
+        raise ValueError("Coupon code length must be at least 1")
     characters = string.ascii_uppercase + string.digits
 
     max_attempts = 100
