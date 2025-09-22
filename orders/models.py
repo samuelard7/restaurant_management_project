@@ -7,3 +7,21 @@ class Coupon(models.Model):
     
     def __str__(self):
         return self.code
+    
+class OrderStatus(models.Model):
+    """
+    Model to represent different order statuses.
+    """
+    name = models.CharField(max_length=50, unique=True)
+    
+    class Meta:
+        verbose_name = "Order Status"
+        verbose_name_plural = "Order Statuses"
+    
+    def __str__(self):
+        return self.name
+
+PENDING = 'Pending'
+PROCESSING = 'Processing'
+COMPLETED = 'Completed'
+CANCELLED = 'Cancelled'
