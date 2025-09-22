@@ -3,7 +3,7 @@ import secrets
 from django.db import IntegrityError
 from .models import Coupon
 
-def generate)coupon_code(length=10):
+def generate_coupon_code(length=10):
     if length < 1:
         raise ValueError("Coupon code length miust be at least 1")
     characters = string.ascii_uppercase + string.digits
