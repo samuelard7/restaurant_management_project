@@ -1,8 +1,10 @@
 from rest_framework import viewsets
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q
-from .models import MenuItem
-from .serializers import MenuItemSerializer
+from .models import MenuItem, Order
+from .serializers import MenuItemSerializer, OrderSerializer
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10  # Number of items per page
@@ -18,7 +20,7 @@ class MenuItemSearchViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = MenuItemSerializer
     pagination_class = StandardResultsSetPagination
 
-    def get_queryset(self):
+    def get_queryset(self, request):
         """
         Filter menu items based on the 'search' query parameter.
         """
@@ -28,4 +30,15 @@ class MenuItemSearchViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(name__icontains=search_query)
         return queryset.order_by('name')
 
+class OrderHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+    pagination_class = StandardResultsSetPagination
 
+    def get(self, request):
+        orders = Order.objects.filter(user=request.user).select_related('status').prefetch_related('items__menu_item').order_by('-created_at')
+
+        paginator = self.pagination_class()
+        paginated_orders = paginator.paginate_queryset(orders, request)
+
+        serializer = OrderSerializer(paginated_orders, many=True)
+        return paginator.get_paginated_response(serializer.data)
