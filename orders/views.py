@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
@@ -7,7 +7,7 @@ from .models import MenuItem, Order
 from .serializers import MenuItemSerializer, OrderSerializer
 
 class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 10  # Number of items per page
+    page_size = 10
     page_size_query_param = 'page_size'
     max_page_size = 100
 
@@ -42,3 +42,14 @@ class OrderHistoryView(APIView):
 
         serializer = OrderSerializer(paginated_orders, many=True)
         return paginator.get_paginated_response(serializer.data)
+
+class MenuItemByCategoryView(generics.ListAPIView):
+    serializer_class = MenuItemSerializer
+    pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self, request):
+        queryset = MenuItem.objects.select_related('category').all()
+        category_name = self.request.query_params.get('category', None)
+        if category_name:
+            queryset = queryset.filter(category__name__iexact=category_name)
+        return queryset.order_by('name')
