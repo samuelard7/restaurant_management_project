@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q
 from .models import MenuItem, Order
+from utils.validation_utils import validate_email_address
 from .serializers import MenuItemSerializer, OrderSerializer
 
 class StandardResultsSetPagination(PageNumberPagination):
