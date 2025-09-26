@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import MenuItem, Order, OrderItem
 from home.models import MenuCategory
+from django.contrib.auth.models import User
+from utils.validation_utils import validate_email_address
 
 class MenuItemSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source='category.name', read_only=True)
@@ -32,3 +34,29 @@ class OrderItemSerializer(serializers.ModelSerializer):
         model = Order
         fields = ['id','created_at','total_amount','status_name','items']
         
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+        extra_kwargs = {
+            'email' : {'required': True},
+        }
+
+    def validate_email(self, value):
+        is_valid, message = validate_email_address(value)
+        if not is_valid:
+            raise serializers.ValidationError(message)
+        user = self.context['request'].user
+        if User.objects.exclude(pk=user.pk).filter(email=value).exits():
+            raise serializers.ValidationError("This email is already in use.")
+        return value
+
+    def validate_first_name(self, value):
+        if value and not value.strip():
+            raise serializers.ValidationError("First name cannot be empty.")
+        return value.strip() if value else value
+    
+    def validate_last_name(self, value):
+        if value and not value.strip():
+            raise serializers.ValidationError("Last name cannot be empty.")
+        return value.strip() if value else value
