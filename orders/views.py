@@ -2,9 +2,11 @@ from rest_framework import viewsets, generics
 from django.shortcuts import render
 from .forms import UserProfileForm
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q
+from rest_framework.exceptions import NotFound, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from .models import MenuItem, Order
 from utils.validation_utils import validate_email_address
 from .serializers import MenuItemSerializer, OrderSerializer
@@ -70,3 +72,25 @@ class UpdateEmailView(APIView):
             return JsonResponse({"status":"success", "message":"Email updated successfully"})
         else:
             return JsonResponse({"status":"error", "message":form.errors}, status=400)
+
+
+
+class MenuItemUpdateViewSet(viewsets.ModelViewSet):
+    queryset = MenuItem.objects.all()
+    serializer_class = MenuItemSerializer
+    permission_classes = [IsAdminUser]
+    http_method_names = ['put', 'options']
+
+    def update(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            serializer = self.get_serializer(instance, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response(serializer.data)
+        except ObjectDoesNotExist:
+            raise NotFound("Menu item not found.")
+        except ValidationError as e:
+            return Response({"detail": str(e)}, status=400)
+        except Exception as e:
+            return Response({"detail": "An unexpected error occurred."}, status=500)
