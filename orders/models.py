@@ -84,7 +84,7 @@ class Restaurant(models.Model):
         return self.name
     class Meta:
         verbose_name = "Restaurant"
-        verbose_name_plural = "restaurants"
+        verbose_name_plural = "Restaurants"
     def get_operating_days_list(self):
         if self.operating_days:
             return [day.strip() for day in self.operating_days.split('')]
