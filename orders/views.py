@@ -1,4 +1,6 @@
 from rest_framework import viewsets, generics
+from django.shortcuts import render
+from .forms import UserProfileForm
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
