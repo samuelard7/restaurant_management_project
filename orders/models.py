@@ -70,6 +70,26 @@ class MenuItem(models.Model):
         verbose_name = "Menu Item"
         verbose_name_plural = "Menu Items"
 
+class Restaurant(models.Model):
+    name = models.CharField(max_length=100)
+    address = models.TextField(blank=True)
+    operating_days = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Comma-separated list of operating days (e.g., 'Mon, Tue,Wed,Thu,Fri')",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+    class Meta:
+        verbose_name = "Restaurant"
+        verbose_name_plural = "restaurants"
+    def get_operating_days_list(self):
+        if self.operating_days:
+            return [day.strip() for day in self.operating_days.split('')]
+        return []
+
 PENDING = 'Pending'
 PROCESSING = 'Processing'
 COMPLETED = 'Completed'
