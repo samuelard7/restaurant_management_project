@@ -56,3 +56,17 @@ class MenuItemByCategoryView(generics.ListAPIView):
         if category_name:
             queryset = queryset.filter(category__name__iexact=category_name)
         return queryset.order_by('name')
+
+
+class UpdateEmailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        form = UserProfileForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            request.user.email = email
+            request.user.save()
+            return JsonResponse({"status":"success", "message":"Email updated successfully"})
+        else:
+            return JsonResponse({"status":"error", "message":form.errors}, status=400)
