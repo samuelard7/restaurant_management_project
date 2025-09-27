@@ -28,13 +28,24 @@ class MenuItemSerializer(serializers.ModelSerializer):
         return value.strip()
         
 class OrderItemSerializer(serializers.ModelSerializer):
+    menu_item_name = serializers.CharField(source='menu_item.name', read_only=True)
+    menu_item_id = serializers.PrimaryKeyRelatedField(source='menu_item', read_only=True)
+
+    class Meta:
+        model = OrderItem
+        fields = ['id','menu_item_id','menu_item_name','quantity','price']
+        
+class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
     status_name = serializers.CharField(source='status.name', read_only=True)
+    customer_name = serializers.CharField(source='user.get_full_name', read_only=True)
+    customer_email = serializers.CharField(source='user.email', read_only=True)
 
     class Meta:
         model = Order
-        fields = ['id','created_at','total_amount','status_name','items']
+        fields = ['id', 'created_at', 'total_amount', 'status_name', 'customer_name', 'customer_email', 'items']
         
+
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
