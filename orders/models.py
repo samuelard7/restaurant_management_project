@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from .models import OrderStatus, MenuItem
-from home.models import MenuCategory
+from home.models import MenuCategory, MenuItem
 
 
 class ActiveOrdersManager(models.Manager):
