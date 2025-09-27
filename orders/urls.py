@@ -8,7 +8,6 @@ router.register(r'api/menu-items', MenuItemUpdateViewSet, basename='menu-item-up
 router.register(r'api/profile', UserProfileViewSet, basename='user-profile')
 
 urlpatterns = [
-    path('', include(router.urls)),
     path('api/', include(router.urls)),
     path('api/order-history/', OrderHistoryView.as_view(), name='order_history'),
     path('api/update-email/', UpdateEmailView.as_view(), name='update_email'),
