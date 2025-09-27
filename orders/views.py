@@ -124,3 +124,14 @@ class UserProfileViewSet(viewsets.ViewSet):
                 "detail": "Anunexpected error occured."
             }, status = 500)
             
+class OrderDetailView(generics.RetrieveAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'pk'
+
+    def get_queryset(self):
+        queryset = super().get_queryset().select_related('user', 'status').prefetch_related('item__menu_item')
+        if not self.request.user.is_staff:
+            queryset = queryset.filter(user=self.request.user)
+        return queryset
