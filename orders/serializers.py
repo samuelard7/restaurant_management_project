@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import MenuItem, Order, OrderItem
 from home.models import MenuCategory
+from .models import MenuItem
 from django.contrib.auth.models import User
 from utils.validation_utils import validate_email_address
 
