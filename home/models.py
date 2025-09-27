@@ -9,5 +9,7 @@ class MenuCategory(models.Model):
     class Meta:
         verbose_name = "Menu Category"
         verbose_name_plural = "Menu Categories"
+
+class MenuItem(models.Model)
     
    
