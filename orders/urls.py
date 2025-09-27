@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import MenuItemSearchViewSet, OrderHistoryView, UpdateEmailView, MenuItemUpdateViewSet, UserProfileViewSet
+from .views import MenuItemSearchViewSet, OrderHistoryView, UpdateEmailView, MenuItemUpdateViewSet, UserProfileViewSet, OrderDetailView
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -12,5 +12,5 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/order-history/', OrderHistoryView.as_view(), name='order_history'),
     path('api/update-email/', UpdateEmailView.as_view(), name='update_email'),
-
+    path('api/orders/<int:pk>/', OrderDetailView.as_view(), name='order_detail'),
 ]
