@@ -9,7 +9,7 @@ from rest_framework.exceptions import NotFound, ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 from .models import MenuItem, Order
 from utils.validation_utils import validate_email_address
-from .serializers import MenuItemSerializer, OrderSerializer
+from .serializers import MenuItemSerializer, OrderSerializer, UserProfileSerializer
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
