@@ -10,6 +10,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from .models import MenuItem, Order
 from utils.validation_utils import validate_email_address
 from .serializers import MenuItemSerializer, OrderSerializer, UserProfileSerializer
+from rest_framework.response import Response
+from django.contrib.auth.models import User
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
@@ -94,3 +96,31 @@ class MenuItemUpdateViewSet(viewsets.ModelViewSet):
             return Response({"detail": str(e)}, status=400)
         except Exception as e:
             return Response({"detail": "An unexpected error occurred."}, status=500)
+
+
+class UserProfileViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['put', 'get', 'options']
+
+    def retrieve(self, request, *args, **kwargs):
+        serializer = UserProfileSerializer(request.user)
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        try:
+            serializer = UserProfileSerializer(
+                request.user,
+                data = request.data,
+                partial=True,
+                context={'request': request}
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
+        except ValidationError as e:
+            return Response({"detail": str(e)}, status=400)
+        except Exception as e:
+            return Response({
+                "detail": "Anunexpected error occured."
+            }, status = 500)
+            
